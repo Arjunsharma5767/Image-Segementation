@@ -1,7 +1,7 @@
 import os
 import cv2
 import numpy as np
-from flask import Flask, request, send_from_directory, render_template_string, url_for, redirect
+from flask import Flask, request, send_from_directory, render_template_string, redirect
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -31,10 +31,9 @@ body {
   text-align: center;
   margin: 0 auto;
 }
-h1 {
+h1, h3 {
   color: #333;
   margin-bottom: 20px;
-  font-size: 1.8rem;
 }
 .upload-area {
   border: 2px dashed #ccc;
@@ -46,11 +45,6 @@ h1 {
 .upload-area:hover {
   border-color: #4285f4;
   background-color: #f8f9fa;
-}
-.upload-icon {
-  font-size: 36px;
-  color: #4285f4;
-  margin-bottom: 8px;
 }
 input[type="file"] {
   display: none;
@@ -79,89 +73,6 @@ input[type="file"] {
 .button.download {
   background: #34a853;
 }
-.button.download:hover {
-  background: #2d9249;
-}
-.slider-container {
-  margin: 15px 0;
-  text-align: left;
-}
-.slider-container label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: 600;
-  color: #555;
-}
-.slider {
-  width: 100%;
-  height: 5px;
-  border-radius: 5px;
-  -webkit-appearance: none;
-  background: #ddd;
-  outline: none;
-}
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  background: #4285f4;
-  cursor: pointer;
-}
-.image-container {
-  margin-top: 20px;
-}
-.image-wrapper {
-  display: flex;
-  justify-content: space-around;
-  width: 100%;
-  margin-bottom: 15px;
-  flex-wrap: wrap;
-}
-.image-box {
-  margin: 8px;
-  text-align: center;
-}
-.image-box h3 {
-  margin-bottom: 8px;
-  color: #555;
-}
-img {
-  max-width: 300px;
-  max-height: 300px;
-  border-radius: 4px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-.back-link {
-  display: block;
-  margin-top: 15px;
-  color: #4285f4;
-  text-decoration: none;
-  font-weight: 600;
-}
-.action-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 15px;
-  flex-wrap: wrap;
-}
-.checkbox-container {
-  display: flex;
-  align-items: center;
-  margin: 10px 0;
-}
-.checkbox-container input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  margin-right: 8px;
-  cursor: pointer;
-}
-.checkbox-container label {
-  font-weight: 600;
-  color: #555;
-  cursor: pointer;
-}
 .select-container {
   margin: 10px 0;
   text-align: left;
@@ -178,6 +89,25 @@ img {
   border-radius: 4px;
   border: 1px solid #ddd;
   background-color: white;
+}
+.image-container {
+  margin-top: 20px;
+}
+.image-wrapper {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+.image-box {
+  margin: 8px;
+  text-align: center;
+}
+img {
+  max-width: 300px;
+  max-height: 300px;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 hr {
   margin: 20px 0; 
@@ -211,10 +141,10 @@ INDEX_HTML = """
 </head>
 <body>
   <div class="container">
-    <h1>🔍 Professional Image Segmentation</h1>
+    <h1>🔍 Simple Image Segmentation</h1>
     <form id="upload-form" action="/" method="POST" enctype="multipart/form-data">
       <div class="upload-area" id="drop-area" onclick="document.getElementById('file-input').click()">
-        <div class="upload-icon">📁</div>
+        <div style="font-size: 36px; color: #4285f4; margin-bottom: 8px;">📁</div>
         <p>Click to select or drag and drop an image</p>
       </div>
       <input type="file" id="file-input" name="image" accept="image/*" required>
@@ -222,54 +152,50 @@ INDEX_HTML = """
         <div class="select-container">
           <label for="algorithm">Segmentation Algorithm:</label>
           <select id="algorithm" name="algorithm">
-            <option value="kmeans">K-Means Clustering</option>
-            <option value="threshold">Simple Thresholding</option>
-            <option value="canny">Edge Detection</option>
-            <option value="simple">Color Quantization</option>
+            <option value="kmeans">K-Means (Simple)</option>
+            <option value="quantize">Color Quantization</option>
+            <option value="threshold">Basic Thresholding</option>
+            <option value="cartoon">Cartoon Effect</option>
           </select>
         </div>
-        <div class="slider-container">
-          <label for="segments">Number of Segments: <span id="segments-value">5</span></label>
-          <input type="range" id="segments" name="segments" class="slider" min="2" max="10" value="5">
-        </div>
-        <div class="checkbox-container">
-          <input type="checkbox" id="colorful" name="colorful" value="yes">
-          <label for="colorful">Use Colorful Segments</label>
-        </div>
-        <button type="submit" class="button">Upload & Segment</button>
+        <button type="submit" class="button">Upload & Process</button>
       </div>
     </form>
   </div>
+  
   <script>
-    const segmentsSlider = document.getElementById('segments');
-    const segmentsValue = document.getElementById('segments-value');
-    segmentsSlider.addEventListener('input', function() {
-      segmentsValue.textContent = this.value;
-    });
     const dropArea = document.getElementById('drop-area');
     const fileInput = document.getElementById('file-input');
+    
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
       dropArea.addEventListener(eventName, preventDefaults, false);
     });
+    
     function preventDefaults(e) {
       e.preventDefault();
       e.stopPropagation();
     }
+    
     ['dragenter', 'dragover'].forEach(eventName => {
       dropArea.addEventListener(eventName, highlight, false);
     });
+    
     ['dragleave', 'drop'].forEach(eventName => {
       dropArea.addEventListener(eventName, unhighlight, false);
     });
+    
     function highlight() {
       dropArea.style.borderColor = '#4285f4';
       dropArea.style.backgroundColor = '#f0f7ff';
     }
+    
     function unhighlight() {
       dropArea.style.borderColor = '#ccc';
       dropArea.style.backgroundColor = 'transparent';
     }
+    
     dropArea.addEventListener('drop', handleDrop, false);
+    
     function handleDrop(e) {
       const dt = e.dataTransfer;
       const files = dt.files;
@@ -296,22 +222,37 @@ RESULT_HTML = """
     <div class="container">
         <h1>✨ Segmentation Result</h1>
         
-        <hr>
-
         <div class="image-container">
-            <h3>🖼️ Side by Side
+            <div class="image-wrapper">
+                <div class="image-box">
+                    <h3>Original</h3>
+                    <img src="{{ url_for('uploaded_file', filename=filename) }}" alt="Original">
+                </div>
+                <div class="image-box">
+                    <h3>Processed</h3>
+                    <img src="{{ url_for('processed_file', filename=filename) }}" alt="Processed">
+                </div>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <a href="{{ url_for('download_file', filename=filename) }}" class="button download">Download Processed Image</a>
+            <a href="/" class="button">Process Another Image</a>
+        </div>
+    </div>
+</body>
+</html>
+"""
 
-# ========== IMAGE PROCESSING ==========
-def segment_image(input_path, output_path, algorithm='kmeans', segments=5, colorful=False):
+# ========== SIMPLIFIED IMAGE PROCESSING ==========
+def process_image(input_path, output_path, algorithm='kmeans'):
     """
-    Apply lightweight image segmentation with the specified algorithm
+    Apply lightweight image processing with the specified algorithm
     
     Parameters:
     - input_path: Path to the input image
     - output_path: Path to save the processed image
-    - algorithm: Segmentation algorithm ('kmeans', 'threshold', 'canny', 'simple')
-    - segments: Number of segments/clusters for K-means
-    - colorful: Whether to use random colors for segments
+    - algorithm: Processing algorithm ('kmeans', 'quantize', 'threshold', 'cartoon')
     """
     try:
         # Read the image
@@ -321,7 +262,7 @@ def segment_image(input_path, output_path, algorithm='kmeans', segments=5, color
             raise ValueError(f"Failed to load image from {input_path}")
         
         # Optimize for performance: Resize large images
-        max_dimension = 800
+        max_dimension = 600  # Reduced from 800 for better performance
         height, width = image.shape[:2]
         if max(height, width) > max_dimension:
             scale = max_dimension / max(height, width)
@@ -329,110 +270,46 @@ def segment_image(input_path, output_path, algorithm='kmeans', segments=5, color
             new_height = int(height * scale)
             image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_AREA)
         
-        # Convert to RGB for processing (OpenCV loads as BGR)
-        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        
-        # Prepare result image
-        result = None
-        
-        # Apply selected segmentation algorithm
+        # Apply selected algorithm
         if algorithm == 'kmeans':
-            # Performance optimization: Reduce color depth to speed up clustering
-            image_small = cv2.resize(image_rgb, (image_rgb.shape[1]//2, image_rgb.shape[0]//2), interpolation=cv2.INTER_AREA)
+            # Very simplified K-means with fewer clusters and iterations
+            pixels = image.reshape((-1, 3))
+            pixels = np.float32(pixels)
             
-            # Further reduce complexity by quantizing colors
-            Z = image_small.reshape((-1, 3))
-            Z = np.float32(Z)
+            # Use only 4 clusters and fewer iterations
+            criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 5, 1.0)
+            _, labels, centers = cv2.kmeans(pixels, 4, None, criteria, 1, cv2.KMEANS_RANDOM_CENTERS)
             
-            # Define criteria and apply K-means with fewer iterations
-            criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
-            _, labels, centers = cv2.kmeans(Z, segments, None, criteria, 1, cv2.KMEANS_PP_CENTERS)
-            
-            # Convert back to 8-bit values
             centers = np.uint8(centers)
+            result = centers[labels.flatten()]
+            result = result.reshape(image.shape)
             
-            # Map labels to colors
-            res = centers[labels.flatten()]
-            
-            # Reshape back and resize to original dimensions
-            result_small = res.reshape(image_small.shape)
-            result = cv2.resize(result_small, (image_rgb.shape[1], image_rgb.shape[0]), interpolation=cv2.INTER_NEAREST)
-            
-            # Simple colorful option
-            if colorful:
-                # Create simplified colormap
-                colormap = np.zeros((segments, 3), dtype=np.uint8)
-                for i in range(segments):
-                    colormap[i] = [
-                        (i * 255 // segments),
-                        (255 - i * 255 // segments),
-                        ((i * 140) % 255)
-                    ]
-                
-                # Apply colormap (simplified approach)
-                for i in range(segments):
-                    result[np.all(result == centers[i], axis=2)] = colormap[i]
+        elif algorithm == 'quantize':
+            # Simple color quantization by bit reduction
+            result = (image // 64) * 64
             
         elif algorithm == 'threshold':
-            # Convert to grayscale and blur slightly to reduce noise
-            gray = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2GRAY)
-            blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+            # Simple thresholding
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            _, result = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+            result = cv2.cvtColor(result, cv2.COLOR_GRAY2BGR)
             
-            # Apply simple thresholding
-            _, binary = cv2.threshold(blurred, 127, 255, cv2.THRESH_BINARY)
+        elif algorithm == 'cartoon':
+            # Simplified cartoon effect
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            gray = cv2.medianBlur(gray, 5)
+            edges = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, 
+                                         cv2.THRESH_BINARY, 9, 9)
             
-            # Create basic result
-            if colorful:
-                # Create a simple 2-color result (blue background, yellow foreground)
-                result = np.zeros_like(image_rgb)
-                result[binary == 255] = [255, 255, 0]  # Yellow for foreground
-                result[binary == 0] = [0, 0, 255]      # Blue for background
-            else:
-                # Just use the binary result
-                result = cv2.cvtColor(binary, cv2.COLOR_GRAY2RGB)
+            # Reduce color palette
+            color = (image // 25) * 25
+            
+            # Combine edge mask with color image
+            result = cv2.bitwise_and(color, color, mask=edges)
         
-        elif algorithm == 'canny':
-            # Simple edge detection based segmentation
-            # Convert to grayscale
-            gray = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2GRAY)
-            blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-            
-            # Apply Canny edge detection
-            edges = cv2.Canny(blurred, 50, 150)
-            
-            # Dilate edges to make them more visible
-            kernel = np.ones((3, 3), np.uint8)
-            dilated_edges = cv2.dilate(edges, kernel, iterations=1)
-            
-            if colorful:
-                # Create colorful visualization
-                result = image_rgb.copy()
-                # Overlay edges in bright green
-                result[dilated_edges > 0] = [0, 255, 0]
-            else:
-                # Invert edges for better visibility
-                inverted_edges = cv2.bitwise_not(dilated_edges)
-                result = cv2.cvtColor(inverted_edges, cv2.COLOR_GRAY2RGB)
-        
-        else:  # 'simple' as fallback
-            # Most basic segmentation: just quantize colors
-            # This is very efficient and still gives segmentation-like results
-            
-            # Reduce colors with a simple method
-            div = 32
-            result = image_rgb // div * div + div // 2
-            
-            if colorful:
-                # Apply a simple color shift
-                r, g, b = cv2.split(result)
-                result = cv2.merge([b, r, g])  # BGR to RBG color shift for a funky look
-        
-        # Convert result back to BGR for OpenCV
-        if result is not None:
-            result = cv2.cvtColor(result, cv2.COLOR_RGB2BGR)
         else:
-            # Fallback to original image if processing failed
-            result = image
+            # Fallback to simple color reduction
+            result = (image // 32) * 32
         
         # Save the processed image
         cv2.imwrite(output_path, result)
@@ -470,13 +347,11 @@ def index():
             # Save the uploaded file
             file.save(input_path)
             
-            # Get image processing parameters
+            # Get image processing parameter
             algorithm = request.form.get('algorithm', 'kmeans')
-            segments = int(request.form.get('segments', 5))
-            colorful = request.form.get('colorful') == 'yes'
             
             # Process the image
-            segment_image(input_path, output_path, algorithm, segments, colorful)
+            process_image(input_path, output_path, algorithm)
             
             # Render the result page
             return render_template_string(RESULT_HTML, filename=filename, css=CSS_STYLE)
@@ -500,4 +375,6 @@ def download_file(filename):
     return send_from_directory(app.config['PROCESSED_FOLDER'], filename, as_attachment=True)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Configure for Render deployment
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
