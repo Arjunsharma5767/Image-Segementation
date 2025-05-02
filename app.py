@@ -158,6 +158,13 @@ INDEX_HTML = """
             <option value="cartoon">Cartoon Effect</option>
           </select>
         </div>
+        <div style="margin: 15px 0; text-align: left;">
+          <label for="intensity" style="display: block; margin-bottom: 5px; font-weight: 600; color: #555;">
+            Effect Intensity: <span id="intensity-value">5</span>
+          </label>
+          <input type="range" id="intensity" name="intensity" min="1" max="10" value="5" 
+                 style="width: 100%; height: 5px; border-radius: 5px; -webkit-appearance: none; background: #ddd; outline: none;">
+        </div>
         <button type="submit" class="button">Upload & Process</button>
       </div>
     </form>
@@ -166,6 +173,13 @@ INDEX_HTML = """
   <script>
     const dropArea = document.getElementById('drop-area');
     const fileInput = document.getElementById('file-input');
+    const intensitySlider = document.getElementById('intensity');
+    const intensityValue = document.getElementById('intensity-value');
+    
+    // Update intensity value display when slider is moved
+    intensitySlider.addEventListener('input', function() {
+      intensityValue.textContent = this.value;
+    });
     
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
       dropArea.addEventListener(eventName, preventDefaults, false);
@@ -245,7 +259,7 @@ RESULT_HTML = """
 """
 
 # ========== SIMPLIFIED IMAGE PROCESSING ==========
-def process_image(input_path, output_path, algorithm='kmeans'):
+def process_image(input_path, output_path, algorithm='kmeans', intensity=5):
     """
     Apply lightweight image processing with the specified algorithm
     
@@ -253,6 +267,7 @@ def process_image(input_path, output_path, algorithm='kmeans'):
     - input_path: Path to the input image
     - output_path: Path to save the processed image
     - algorithm: Processing algorithm ('kmeans', 'quantize', 'threshold', 'cartoon')
+    - intensity: Effect intensity (1-10), higher values create stronger effects
     """
     try:
         # Read the image
@@ -270,39 +285,55 @@ def process_image(input_path, output_path, algorithm='kmeans'):
             new_height = int(height * scale)
             image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_AREA)
         
-        # Apply selected algorithm
+        # Apply selected algorithm with intensity control
         if algorithm == 'kmeans':
-            # Very simplified K-means with fewer clusters and iterations
+            # Calculate number of clusters based on intensity (2-8)
+            num_clusters = max(2, min(8, 1 + intensity))
+            
+            # Very simplified K-means with variable clusters based on intensity
             pixels = image.reshape((-1, 3))
             pixels = np.float32(pixels)
             
-            # Use only 4 clusters and fewer iterations
             criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 5, 1.0)
-            _, labels, centers = cv2.kmeans(pixels, 4, None, criteria, 1, cv2.KMEANS_RANDOM_CENTERS)
+            _, labels, centers = cv2.kmeans(pixels, num_clusters, None, criteria, 1, cv2.KMEANS_RANDOM_CENTERS)
             
             centers = np.uint8(centers)
             result = centers[labels.flatten()]
             result = result.reshape(image.shape)
             
         elif algorithm == 'quantize':
-            # Simple color quantization by bit reduction
-            result = (image // 64) * 64
+            # Color quantization with variable reduction based on intensity
+            # Higher intensity = more aggressive quantization
+            divisor = max(8, 128 - intensity * 10)  # Range from 128 (mild) to 8 (strong)
+            result = (image // divisor) * divisor
             
         elif algorithm == 'threshold':
-            # Simple thresholding
+            # Thresholding with variable threshold based on intensity
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            _, result = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+            
+            # Adjust threshold value based on intensity
+            threshold_value = 100 + (intensity * 10)  # Range from 110 to 200
+            _, result = cv2.threshold(gray, threshold_value, 255, cv2.THRESH_BINARY)
             result = cv2.cvtColor(result, cv2.COLOR_GRAY2BGR)
             
         elif algorithm == 'cartoon':
-            # Simplified cartoon effect
+            # Simplified cartoon effect with intensity control
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             gray = cv2.medianBlur(gray, 5)
-            edges = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, 
-                                         cv2.THRESH_BINARY, 9, 9)
             
-            # Reduce color palette
-            color = (image // 25) * 25
+            # Adjust block size based on intensity (odd numbers only)
+            block_size = 3 + (2 * intensity)  # 5, 7, 9, 11, etc.
+            if block_size % 2 == 0:
+                block_size += 1
+                
+            c_value = 5 + intensity  # Threshold constant increases with intensity
+            
+            edges = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, 
+                                         cv2.THRESH_BINARY, block_size, c_value)
+            
+            # Reduce color palette, intensity controls the level of reduction
+            divisor = max(8, 40 - intensity * 3)  # More colors at low intensity, fewer at high
+            color = (image // divisor) * divisor
             
             # Combine edge mask with color image
             result = cv2.bitwise_and(color, color, mask=edges)
@@ -347,11 +378,12 @@ def index():
             # Save the uploaded file
             file.save(input_path)
             
-            # Get image processing parameter
+            # Get image processing parameters
             algorithm = request.form.get('algorithm', 'kmeans')
+            intensity = int(request.form.get('intensity', 5))
             
             # Process the image
-            process_image(input_path, output_path, algorithm)
+            process_image(input_path, output_path, algorithm, intensity)
             
             # Render the result page
             return render_template_string(RESULT_HTML, filename=filename, css=CSS_STYLE)
