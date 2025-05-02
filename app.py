@@ -15,73 +15,66 @@ os.makedirs(app.config['PROCESSED_FOLDER'], exist_ok=True)
 # ========== CSS ==========
 CSS_STYLE = """
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  font-family: 'Arial', sans-serif;
+  background: #f0f2f5;
   margin: 0;
-  padding: 0;
+  padding: 20px;
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 .container {
   background: white;
-  width: 90%;
-  max-width: 1000px;
-  padding: 40px;
-  border-radius: 15px;
-  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+  width: 95%;
+  max-width: 800px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   text-align: center;
+  margin: 0 auto;
 }
 h1 {
   color: #333;
-  margin-bottom: 30px;
-  font-weight: 700;
-  font-size: 2.2rem;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
 }
 .upload-area {
   border: 2px dashed #ccc;
-  border-radius: 10px;
-  padding: 30px;
-  margin-bottom: 20px;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 15px;
   cursor: pointer;
-  transition: all 0.3s ease;
 }
 .upload-area:hover {
   border-color: #4285f4;
   background-color: #f8f9fa;
 }
 .upload-icon {
-  font-size: 48px;
+  font-size: 36px;
   color: #4285f4;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 input[type="file"] {
   display: none;
 }
 .control-panel {
-  margin: 20px 0;
-  padding: 20px;
+  margin: 15px 0;
+  padding: 15px;
   background: #f8f9fa;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 .button {
-  padding: 12px 24px;
+  padding: 8px 16px;
   background: #4285f4;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
   font-weight: 600;
-  transition: all 0.3s ease;
   text-decoration: none;
   display: inline-block;
-  margin: 10px 5px;
+  margin: 8px 5px;
 }
 .button:hover {
   background: #3367d6;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 .button.download {
   background: #34a853;
@@ -90,12 +83,12 @@ input[type="file"] {
   background: #2d9249;
 }
 .slider-container {
-  margin: 20px 0;
+  margin: 15px 0;
   text-align: left;
 }
 .slider-container label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
   font-weight: 600;
   color: #555;
 }
@@ -109,46 +102,39 @@ input[type="file"] {
 }
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 18px;
-  height: 18px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
   background: #4285f4;
   cursor: pointer;
 }
 .image-container {
-  margin-top: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  margin-top: 20px;
 }
 .image-wrapper {
   display: flex;
   justify-content: space-around;
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   flex-wrap: wrap;
 }
 .image-box {
-  margin: 10px;
+  margin: 8px;
   text-align: center;
 }
 .image-box h3 {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   color: #555;
 }
 img {
-  max-width: 350px;
-  max-height: 350px;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease;
-}
-img:hover {
-  transform: scale(1.03);
+  max-width: 300px;
+  max-height: 300px;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 .back-link {
   display: block;
-  margin-top: 20px;
+  margin-top: 15px;
   color: #4285f4;
   text-decoration: none;
   font-weight: 600;
@@ -156,21 +142,19 @@ img:hover {
 .action-buttons {
   display: flex;
   justify-content: center;
-  gap: 15px;
-  margin-top: 20px;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
 }
 .checkbox-container {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  margin: 15px 0;
-  padding: 5px;
+  margin: 10px 0;
 }
 .checkbox-container input[type="checkbox"] {
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  margin-right: 10px;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
   cursor: pointer;
 }
 .checkbox-container label {
@@ -179,48 +163,39 @@ img:hover {
   cursor: pointer;
 }
 .select-container {
-  margin: 15px 0;
+  margin: 10px 0;
   text-align: left;
 }
 .select-container label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
   font-weight: 600;
   color: #555;
 }
 .select-container select {
   width: 100%;
-  padding: 10px;
-  border-radius: 5px;
+  padding: 8px;
+  border-radius: 4px;
   border: 1px solid #ddd;
   background-color: white;
-  font-size: 16px;
-}
-.twentytwenty-container {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 0 15px rgba(0,0,0,0.1);
-}
-.twentytwenty-container img {
-  width: 100%;
-  display: block;
 }
 hr {
-  margin: 40px 0; 
+  margin: 20px 0; 
   border: 0; 
-  border-top: 1px solid #ccc;
+  border-top: 1px solid #eee;
 }
-.comparison-slider {
-  width: 100%;
-  max-width: 700px;
-  position: relative;
-  overflow: hidden;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  margin: 20px auto;
+@media (max-width: 600px) {
+  .container {
+    padding: 15px;
+  }
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  .image-wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
 }
 """
 
@@ -248,9 +223,9 @@ INDEX_HTML = """
           <label for="algorithm">Segmentation Algorithm:</label>
           <select id="algorithm" name="algorithm">
             <option value="kmeans">K-Means Clustering</option>
-            <option value="watershed">Watershed</option>
-            <option value="grabcut">GrabCut</option>
-            <option value="threshold">Adaptive Thresholding</option>
+            <option value="threshold">Simple Thresholding</option>
+            <option value="canny">Edge Detection</option>
+            <option value="simple">Color Quantization</option>
           </select>
         </div>
         <div class="slider-container">
@@ -314,13 +289,8 @@ RESULT_HTML = """
 <head>
     <title>Segmentation Result</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>{{ css }}</style>
-
-    <!-- jQuery + twentytwenty -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twentytwenty/1.0.0/css/twentytwenty.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.event.move/2.0.0/jquery.event.move.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twentytwenty/1.0.0/js/jquery.twentytwenty.js"></script>
 </head>
 <body>
     <div class="container">
@@ -329,45 +299,17 @@ RESULT_HTML = """
         <hr>
 
         <div class="image-container">
-            <h3>🖼️ Side by Side View</h3>
-            <div class="image-wrapper">
-                <div class="image-box">
-                    <h3>Original</h3>
-                    <img src="{{ url_for('uploaded_file', filename=filename) }}" alt="Original Image">
-                </div>
-                <div class="image-box">
-                    <h3>Segmented</h3>
-                    <img src="{{ url_for('processed_file', filename=filename) }}" alt="Segmented Image">
-                </div>
-            </div>
-
-            <div class="action-buttons">
-                <a href="{{ url_for('download_file', filename=filename) }}" class="button download">⬇️ Download Segmented</a>
-                <a href="{{ url_for('index') }}" class="button">⏪ Process Another Image</a>
-            </div>
-        </div>
-    </div>
-
-    <script>
-      $(function(){
-        $(".twentytwenty-container").twentytwenty({
-          default_offset_pct: 0.5
-        });
-      });
-    </script>
-</body>
-</html>
-"""
+            <h3>🖼️ Side by Side
 
 # ========== IMAGE PROCESSING ==========
 def segment_image(input_path, output_path, algorithm='kmeans', segments=5, colorful=False):
     """
-    Apply image segmentation with the specified algorithm
+    Apply lightweight image segmentation with the specified algorithm
     
     Parameters:
     - input_path: Path to the input image
     - output_path: Path to save the processed image
-    - algorithm: Segmentation algorithm ('kmeans', 'watershed', 'grabcut', 'threshold')
+    - algorithm: Segmentation algorithm ('kmeans', 'threshold', 'canny', 'simple')
     - segments: Number of segments/clusters for K-means
     - colorful: Whether to use random colors for segments
     """
@@ -378,6 +320,15 @@ def segment_image(input_path, output_path, algorithm='kmeans', segments=5, color
         if image is None:
             raise ValueError(f"Failed to load image from {input_path}")
         
+        # Optimize for performance: Resize large images
+        max_dimension = 800
+        height, width = image.shape[:2]
+        if max(height, width) > max_dimension:
+            scale = max_dimension / max(height, width)
+            new_width = int(width * scale)
+            new_height = int(height * scale)
+            image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_AREA)
+        
         # Convert to RGB for processing (OpenCV loads as BGR)
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         
@@ -386,158 +337,95 @@ def segment_image(input_path, output_path, algorithm='kmeans', segments=5, color
         
         # Apply selected segmentation algorithm
         if algorithm == 'kmeans':
-            # Reshape image for K-means
-            pixel_values = image_rgb.reshape((-1, 3))
-            pixel_values = np.float32(pixel_values)
+            # Performance optimization: Reduce color depth to speed up clustering
+            image_small = cv2.resize(image_rgb, (image_rgb.shape[1]//2, image_rgb.shape[0]//2), interpolation=cv2.INTER_AREA)
             
-            # Define criteria and apply K-means
-            criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.2)
-            _, labels, centers = cv2.kmeans(pixel_values, segments, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS)
+            # Further reduce complexity by quantizing colors
+            Z = image_small.reshape((-1, 3))
+            Z = np.float32(Z)
+            
+            # Define criteria and apply K-means with fewer iterations
+            criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
+            _, labels, centers = cv2.kmeans(Z, segments, None, criteria, 1, cv2.KMEANS_PP_CENTERS)
             
             # Convert back to 8-bit values
             centers = np.uint8(centers)
             
             # Map labels to colors
-            segmented_image = centers[labels.flatten()]
+            res = centers[labels.flatten()]
             
-            # Reshape back to original image dimensions
-            result = segmented_image.reshape(image_rgb.shape)
+            # Reshape back and resize to original dimensions
+            result_small = res.reshape(image_small.shape)
+            result = cv2.resize(result_small, (image_rgb.shape[1], image_rgb.shape[0]), interpolation=cv2.INTER_NEAREST)
             
-            # If colorful option is selected, use random colors for visualization
+            # Simple colorful option
             if colorful:
-                # Create a colormap for visualization
+                # Create simplified colormap
                 colormap = np.zeros((segments, 3), dtype=np.uint8)
                 for i in range(segments):
-                    colormap[i] = np.random.randint(0, 255, 3)
+                    colormap[i] = [
+                        (i * 255 // segments),
+                        (255 - i * 255 // segments),
+                        ((i * 140) % 255)
+                    ]
                 
-                # Create colored segmentation result
-                colored_result = np.zeros_like(image_rgb)
-                labels_2d = labels.reshape(image_rgb.shape[0], image_rgb.shape[1])
-                
+                # Apply colormap (simplified approach)
                 for i in range(segments):
-                    colored_result[labels_2d == i] = colormap[i]
-                
-                result = colored_result
-                
-        elif algorithm == 'watershed':
-            # Convert to grayscale
-            gray = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2GRAY)
-            
-            # Apply Otsu's thresholding
-            _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
-            
-            # Noise removal
-            kernel = np.ones((3, 3), np.uint8)
-            opening = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel, iterations=2)
-            
-            # Sure background area
-            sure_bg = cv2.dilate(opening, kernel, iterations=3)
-            
-            # Finding sure foreground area
-            dist_transform = cv2.distanceTransform(opening, cv2.DIST_L2, 5)
-            _, sure_fg = cv2.threshold(dist_transform, 0.7 * dist_transform.max(), 255, 0)
-            
-            # Finding unknown region
-            sure_fg = np.uint8(sure_fg)
-            unknown = cv2.subtract(sure_bg, sure_fg)
-            
-            # Marker labelling
-            _, markers = cv2.connectedComponents(sure_fg)
-            
-            # Add one to all labels so that background is not 0, but 1
-            markers = markers + 1
-            
-            # Mark the region of unknown with zero
-            markers[unknown == 255] = 0
-            
-            # Apply watershed
-            markers = cv2.watershed(image, markers.copy())
-            
-            # Create visualization
-            if colorful:
-                # Create random colors
-                colors = []
-                for i in range(np.max(markers) + 1):
-                    colors.append(np.random.randint(0, 255, 3))
-                
-                # Create colored result
-                result = np.zeros_like(image_rgb)
-                for i in range(1, np.max(markers) + 1):
-                    result[markers == i] = colors[i]
-            else:
-                # Create grayscale result
-                result = np.zeros_like(gray)
-                for i in range(1, np.max(markers) + 1):
-                    result[markers == i] = 255 * i // np.max(markers)
-                result = cv2.cvtColor(result, cv2.COLOR_GRAY2RGB)
-            
-        elif algorithm == 'grabcut':
-            # Create initial mask
-            mask = np.zeros(image.shape[:2], np.uint8)
-            
-            # Set rectangular area for foreground
-            rect = (50, 50, image.shape[1]-100, image.shape[0]-100)
-            
-            # Create temporary arrays for GrabCut
-            bgdModel = np.zeros((1, 65), np.float64)
-            fgdModel = np.zeros((1, 65), np.float64)
-            
-            # Apply GrabCut
-            cv2.grabCut(image, mask, rect, bgdModel, fgdModel, 5, cv2.GC_INIT_WITH_RECT)
-            
-            # Modify mask: 0 and 2 for background, 1 and 3 for foreground
-            mask2 = np.where((mask == 2) | (mask == 0), 0, 1).astype('uint8')
-            
-            # Apply the mask to get foreground
-            result = image_rgb * mask2[:, :, np.newaxis]
-            
-            # Create background in white
-            background = np.ones_like(image_rgb) * 255
-            result = result + background * (1 - mask2[:, :, np.newaxis])
-            
-            if colorful:
-                # Create colorful foreground
-                colored_mask = np.zeros_like(image_rgb)
-                colored_mask[mask2 == 1] = np.random.randint(50, 255, 3)
-                
-                # Blend with original
-                blend_ratio = 0.7
-                result = (blend_ratio * colored_mask + (1 - blend_ratio) * image_rgb * mask2[:, :, np.newaxis]).astype(np.uint8)
-                
-                # Add white background
-                result = result + background * (1 - mask2[:, :, np.newaxis])
+                    result[np.all(result == centers[i], axis=2)] = colormap[i]
             
         elif algorithm == 'threshold':
+            # Convert to grayscale and blur slightly to reduce noise
+            gray = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2GRAY)
+            blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+            
+            # Apply simple thresholding
+            _, binary = cv2.threshold(blurred, 127, 255, cv2.THRESH_BINARY)
+            
+            # Create basic result
+            if colorful:
+                # Create a simple 2-color result (blue background, yellow foreground)
+                result = np.zeros_like(image_rgb)
+                result[binary == 255] = [255, 255, 0]  # Yellow for foreground
+                result[binary == 0] = [0, 0, 255]      # Blue for background
+            else:
+                # Just use the binary result
+                result = cv2.cvtColor(binary, cv2.COLOR_GRAY2RGB)
+        
+        elif algorithm == 'canny':
+            # Simple edge detection based segmentation
             # Convert to grayscale
             gray = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2GRAY)
+            blurred = cv2.GaussianBlur(gray, (5, 5), 0)
             
-            # Apply adaptive thresholding
-            binary = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
-                                          cv2.THRESH_BINARY, 11, 2)
+            # Apply Canny edge detection
+            edges = cv2.Canny(blurred, 50, 150)
             
-            # Find contours
-            contours, _ = cv2.findContours(binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+            # Dilate edges to make them more visible
+            kernel = np.ones((3, 3), np.uint8)
+            dilated_edges = cv2.dilate(edges, kernel, iterations=1)
             
-            # Create result image
             if colorful:
-                # Create colored contours
-                result = np.ones_like(image_rgb) * 255  # White background
-                for i, contour in enumerate(contours):
-                    # Skip very small contours
-                    if cv2.contourArea(contour) < 100:
-                        continue
-                    # Random color for each contour
-                    color = np.random.randint(0, 255, 3).tolist()
-                    cv2.drawContours(result, [contour], -1, color, 2)
-                    # Fill contour with lighter version of the color
-                    mask = np.zeros((image.shape[0], image.shape[1]), dtype=np.uint8)
-                    cv2.fillPoly(mask, [contour], 255)
-                    light_color = [(c + 255) // 2 for c in color]  # Lighter color
-                    result[mask == 255] = light_color
+                # Create colorful visualization
+                result = image_rgb.copy()
+                # Overlay edges in bright green
+                result[dilated_edges > 0] = [0, 255, 0]
             else:
-                # Create grayscale result with contours
-                result = np.ones_like(image_rgb) * 255  # White background
-                cv2.drawContours(result, contours, -1, (0, 0, 0), 1)
+                # Invert edges for better visibility
+                inverted_edges = cv2.bitwise_not(dilated_edges)
+                result = cv2.cvtColor(inverted_edges, cv2.COLOR_GRAY2RGB)
+        
+        else:  # 'simple' as fallback
+            # Most basic segmentation: just quantize colors
+            # This is very efficient and still gives segmentation-like results
+            
+            # Reduce colors with a simple method
+            div = 32
+            result = image_rgb // div * div + div // 2
+            
+            if colorful:
+                # Apply a simple color shift
+                r, g, b = cv2.split(result)
+                result = cv2.merge([b, r, g])  # BGR to RBG color shift for a funky look
         
         # Convert result back to BGR for OpenCV
         if result is not None:
